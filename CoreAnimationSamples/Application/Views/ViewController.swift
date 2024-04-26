@@ -12,6 +12,8 @@ class ViewController: UIViewController {
     let blueView = UIView()
     let blueViewContent = UIView()
     let actionsCollectionView = ActionsCollectionView()
+    var leadingConstraint: NSLayoutConstraint?
+    var centerXConstraint: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,13 +28,24 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        leadingConstraint = blueView
+            .leadingAnchor.constraint(
+                equalTo: self.view.leadingAnchor, constant: -1000
+            )
+        centerXConstraint = blueView
+            .centerXAnchor.constraint(
+                equalTo: self.view.centerXAnchor
+            )
+
         blueView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             blueView.heightAnchor.constraint(equalToConstant: 50),
             blueView.widthAnchor.constraint(equalToConstant: 50),
-            blueView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+
             blueView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)
         ])
+        leadingConstraint?.isActive = true
+        centerXConstraint?.isActive = false
 
         actionsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         actionsCollectionView.viewToMove = blueView
@@ -50,5 +63,21 @@ class ViewController: UIViewController {
             blueViewContent.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 64),
             blueViewContent.bottomAnchor.constraint(equalTo: actionsCollectionView.topAnchor)
         ])
+
+        addEntryAnimation()
+    }
+
+    func addEntryAnimation() {
+        let duration = 1.0
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            let animator1 = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
+                self?.leadingConstraint?.isActive = false
+                self?.centerXConstraint?.isActive = true
+                self?.view.layoutIfNeeded()
+            }
+
+            animator1.startAnimation()
+        }
     }
 }
