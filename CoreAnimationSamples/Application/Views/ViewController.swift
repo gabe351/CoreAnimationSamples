@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     let actionsCollectionView = ActionsCollectionView()
     var leadingConstraint: NSLayoutConstraint?
     var centerXConstraint: NSLayoutConstraint?
+    var collectionViewLeading: NSLayoutConstraint?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,10 +28,12 @@ class ViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        let offScreenLeading: CGFloat = -1000.0
 
         leadingConstraint = blueView
             .leadingAnchor.constraint(
-                equalTo: self.view.leadingAnchor, constant: -1000
+                equalTo: self.view.leadingAnchor, 
+                constant: offScreenLeading
             )
         centerXConstraint = blueView
             .centerXAnchor.constraint(
@@ -48,13 +51,18 @@ class ViewController: UIViewController {
         centerXConstraint?.isActive = false
 
         actionsCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionViewLeading = actionsCollectionView
+            .leadingAnchor.constraint(
+                equalTo: self.view.leadingAnchor, 
+                constant: offScreenLeading
+            )
         actionsCollectionView.viewToMove = blueView
         NSLayoutConstraint.activate([
             actionsCollectionView.heightAnchor.constraint(equalToConstant: 100),
-            actionsCollectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 16),
             actionsCollectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -16),
             actionsCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -40)
         ])
+        collectionViewLeading?.isActive = true
 
         blueViewContent.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -69,15 +77,23 @@ class ViewController: UIViewController {
 
     func addEntryAnimation() {
         let duration = 1.0
+        let onScreenCollectionViewLeading = 16.0
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            let animator1 = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
+            let blueViewAnimator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
                 self?.leadingConstraint?.isActive = false
                 self?.centerXConstraint?.isActive = true
                 self?.view.layoutIfNeeded()
             }
 
-            animator1.startAnimation()
+            blueViewAnimator.startAnimation()
+
+            let collectionViewAnimator = UIViewPropertyAnimator(duration: duration, curve: .easeInOut) {
+                self?.collectionViewLeading?.constant = onScreenCollectionViewLeading
+                self?.view.layoutIfNeeded()
+            }
+
+            collectionViewAnimator.startAnimation(afterDelay: 0.2)
         }
     }
 }
