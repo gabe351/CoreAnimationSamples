@@ -15,5 +15,5 @@ In this project you can find a simple blue view and a list of possible animation
 ### Existing animations
 
 <p>
-  <img src="https://github.com/gabe351/CoreAnimationSamples/assets/12145021/22f2beba-5e25-4b12-94d2-193538278ad0" width=300>
+  <img src="https://github.com/gabe351/CoreAnimationSamples/assets/12145021/2ece5806-bb99-4c49-849a-01743d3c0697" width=300>
 </p>
